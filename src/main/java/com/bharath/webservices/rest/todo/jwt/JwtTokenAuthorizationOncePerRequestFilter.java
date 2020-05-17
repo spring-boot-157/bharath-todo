@@ -36,7 +36,7 @@ public class JwtTokenAuthorizationOncePerRequestFilter extends OncePerRequestFil
     private String tokenHeader;
 
     @Override
-    //test.
+    //test..
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
         logger.debug("Authentication Request For '{}'", request.getRequestURL());
 
