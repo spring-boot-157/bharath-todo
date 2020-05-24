@@ -2,7 +2,10 @@ package com.bharath.webservices.rest.todo.controller;
 
 import java.util.List;
 
+import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,6 +27,11 @@ public class TodoController {
 	
 	@Autowired
 	private TodoService todoService;
+	
+	@Autowired
+	private AmqpTemplate rabbitTemplate;
+
+ 
 
 	@GetMapping("/users/{name}/todos")
 	public ResponseEntity<List<Todo>> getTodos(@PathVariable String name) {
@@ -43,7 +51,7 @@ public class TodoController {
 	
 	@PutMapping("/users/{name}/todos/{Id}")
 	public ResponseEntity<Void> updateTodo(@PathVariable String name,@PathVariable int Id,@RequestBody Todo todo) {
-		System.out.println("todo----"+todo.getUser());
+		System.out.println("todo-----"+todo.getUser());
 		todoService.save(name,todo);
 		return   ResponseEntity.noContent().build();
 	}
@@ -53,4 +61,20 @@ public class TodoController {
 		todoService.save(name, todo);
 		return   ResponseEntity.noContent().build();
 	}
+	
+	@PostMapping(path = "/customer/{queue}/{message}")
+	public ResponseEntity<String> sendMessage(@PathVariable("message")   String message, @PathVariable("queue") String queue) throws Exception {
+
+		rabbitTemplate.convertAndSend(queue, message);
+	     
+	      
+		return new ResponseEntity<String>(message, HttpStatus.OK);
+	}
+	
+	@RabbitListener(queues = "test-Queue")
+	public void receiveMessage(String message) {
+	    System.out.println("Received   message: " + message);
+	}
+	 
+	
 }
