@@ -51,7 +51,7 @@ public class TodoController {
 	
 	@PutMapping("/users/{name}/todos/{Id}")
 	public ResponseEntity<Void> updateTodo(@PathVariable String name,@PathVariable int Id,@RequestBody Todo todo) {
-		System.out.println("todo- user--.--."+todo.getUser());
+		System.out.println("todo- user-..-.--."+todo.getUser());
 		todoService.save(name,todo);
 		return   ResponseEntity.noContent().build();
 	}
